@@ -13,6 +13,7 @@
       :loading="isLoading"
       :footer-props="{
         'disable-items-per-page': true,
+        'disable-pagination': isLoading,
         'items-per-page-options': [],
         'items-per-page-text': ''
       }"
@@ -37,6 +38,12 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'DatatableComponent',
+  props: {
+    searchStr: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       page: 1,
@@ -69,6 +76,9 @@ export default {
     })
   },
   watch: {
+    searchStr () {
+      if (this.options.page !== 1) this.options.page = 1
+    },
     options: {
       handler ({ page }) {
         this.$emit('pageChanged', page - 1)

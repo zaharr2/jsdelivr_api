@@ -19,7 +19,6 @@ export default {
 
       axios.get(`https://registry.npmjs.org/-/v1/search?&size=${size}&from=${page * size}&text=${searchStr}`)
         .then(({ data: { total, objects } }) => {
-          console.log('objects', objects, 'total', total)
           commit(SET_PARAMS, total)
           commit(SET_ITEMS, objects)
         })

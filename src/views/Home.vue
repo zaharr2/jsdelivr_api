@@ -3,7 +3,7 @@
     <v-row class="align-center flex-column">
       <v-col cols="12">
         <Search
-          @startSearching="searchStr = $event || ''"
+          @startSearching="setSearchStr"
         />
       </v-col>
     </v-row>
@@ -13,7 +13,8 @@
         cols="12"
       >
         <Table
-          @pageChanged="page = $event"
+          :searchStr="searchStr"
+          @pageChanged="setPage"
           @toggleModal="toggleModal(true)"
         />
       </v-col>
@@ -58,18 +59,6 @@ export default {
       isSelectedPackageInfoLoading: 'selectedPackage/isLoading'
     })
   },
-  watch: {
-    searchStr (newVal) {
-      if (newVal) {
-        this.fetchPackages(this.queryParams())
-      } else {
-        this.setPackages()
-      }
-    },
-    page () {
-      this.fetchPackages(this.queryParams())
-    }
-  },
   methods: {
     ...mapActions({
       fetchPackages: 'packages/fetchItems'
@@ -78,10 +67,26 @@ export default {
       setPackages: 'packages/SET_ITEMS'
     }),
 
-    queryParams () {
-      return {
-        page: this.page,
-        searchStr: this.searchStr
+    setPage ($page) {
+      this.page = $page
+
+      if ($page) {
+        this.fetchPackages({
+          page: $page,
+          searchStr: this.searchStr
+        })
+      }
+    },
+    setSearchStr ($searchStr) {
+      this.searchStr = $searchStr || ''
+
+      if ($searchStr) {
+        this.fetchPackages({
+          page: 0,
+          searchStr: $searchStr
+        })
+      } else {
+        this.setPackages()
       }
     },
     toggleModal (isModalVisible) {

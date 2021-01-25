@@ -2,6 +2,7 @@
   <v-text-field
     v-model="searchStr"
     :append-icon="searchStr ? 'mdi-magnify' : ''"
+    :disabled="isLoading"
     @click:append="emitSearch()"
     label="Search"
     type="text"
@@ -11,12 +12,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Search',
   data: () => ({
     searchStr: '',
     timeout: undefined
   }),
+  computed: {
+    ...mapState({
+      isLoading: state => state.packages.isLoading
+    })
+  },
   watch: {
     searchStr () {
       this.emitSearch()
